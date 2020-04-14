@@ -34,20 +34,6 @@ class SongManager:
 
         return song_id
 
-    def get_song(self, song_id):
-        """ Return student object matching ID"""
-        if song_id is None or type(song_id) != str:
-            raise ValueError("Invalid Song ID")
-
-        session = self._db_session()
-
-        student = session.query(Song).filter(
-                Song.song_id == song_id).first()
-
-        session.close()
-
-        return student
-
     def delete_song(self, song_id):
         """ Delete a song from the database """
         if song_id is None or type(song_id) != str:
@@ -65,6 +51,36 @@ class SongManager:
         session.commit()
 
         session.close()
+
+    def update_song(self, song):
+        """ Updates an existing point """
+
+        if song is None or not isinstance(song, Song):
+            raise ValueError("Invalid Song Object")
+
+        session = self._db_session()
+
+        existing_point = session.query(Song).filter(
+            Song.id == song.id).first()
+        if existing_point is None:
+            raise ValueError("Point does not exist")
+        existing_point.copy(song)
+        session.commit()
+        session.close()
+
+    def get_song(self, song_id):
+        """ Return student object matching ID"""
+        if song_id is None or type(song_id) != str:
+            raise ValueError("Invalid Song ID")
+
+        session = self._db_session()
+
+        student = session.query(Song).filter(
+                Song.song_id == song_id).first()
+
+        session.close()
+
+        return student
 
     def get_all_songs(self):
         """ Return a list of all songs in the DB """
