@@ -1,6 +1,8 @@
 from song import Song
 from playlist import Playlist
 from podcast import Podcast
+import os
+import eyed3
 
 
 class AudioLibrary:
@@ -92,6 +94,12 @@ class AudioLibrary:
         else:
             raise ValueError("Wrong value type for playlist_name, please write a string!")
 
+    def get_song(self, title) -> Song:
+        """Gets a single song object from the title"""
+        for song in self._songs:
+            if title == song._title:
+                return song
+
     def get_songs(self) -> list:
         """Returns the list of songs in the library"""
         return self._songs
@@ -103,6 +111,25 @@ class AudioLibrary:
     def get_podcasts(self) -> list:
         """Returns the list of podcasts in the library"""
         return self._podcasts
+
+    def load(self, path):
+        """Creates a song object for each mp3 in the directory. These objects
+        are appended to the songs list."""
+        if os.path.exists(path):
+            mp3_files = os.listdir(path)
+            for file in mp3_files:
+                if file.endswith('.mp3'):
+                    mp3_file = eyed3.load(os.path.join(path, file))
+                    runtime = mp3_file.info.time_secs
+                    mins = int(runtime // 60)
+                    secs = int(runtime % 60)
+                    song = Song(str(getattr(mp3_file.tag, 'title')), str(getattr(mp3_file.tag, 'artist')),
+                                '{}:{}'.format(mins, secs), '{}'.format(path),
+                                '\\{}'.format(file), str(getattr(mp3_file.tag, 'album')),
+                                str(getattr(mp3_file.tag, 'genre')))
+                    self.add_song(song)  # adds song to songs list
+        else:
+            raise FileNotFoundError("Path not found.")
 
 
 
