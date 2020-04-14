@@ -37,7 +37,7 @@ class SongManager:
     def get_song(self, song_id):
         """ Return student object matching ID"""
         if song_id is None or type(song_id) != str:
-            raise ValueError("Invalid Student ID")
+            raise ValueError("Invalid Song ID")
 
         session = self._db_session()
 
@@ -51,7 +51,7 @@ class SongManager:
     def delete_song(self, song_id):
         """ Delete a song from the database """
         if song_id is None or type(song_id) != str:
-            raise ValueError("Invalid Student ID")
+            raise ValueError("Invalid Song ID")
 
         session = self._db_session()
 
