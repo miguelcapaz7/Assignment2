@@ -1,14 +1,25 @@
-from usage_stats import UsageStats
-from datetime import datetime
 import os
 from abc import abstractmethod
+from base import Base
+from sqlalchemy import Column, Text
+from datetime import datetime
 
 
-class AudioFile:
+class AudioFile(Base):
     """Represents an AudioFile super class
 
     Author: Miguel Capaz
     ID: A01167207"""
+
+    __tablename__ = "Song"
+    id = Column(Text, primary_key=True)
+    title = Column(Text, nullable=False)
+    artist = Column(Text, nullable=False)
+    runtime = Column(Text, nullable=False)
+    pathname = Column(Text, nullable=False)
+    filename = Column(Text, nullable=False)
+
+    _DATE_FORMAT = "%Y-%m-%d"
 
     def __init__(self, title: str, artist: str, runtime: str, pathname: str, filename: str):
         """This is the constructor which creates an AudioFile superclass"""
@@ -29,10 +40,15 @@ class AudioFile:
         else:
             self._pathname = pathname
             self._filename = filename
+        if AudioFile.__valid_datetime(datetime.now()):
+            self._date_added = datetime.now().strftime(AudioFile._DATE_FORMAT)
+        else:
+            raise ValueError("date_added must be a datetime object")
 
         self.__validate_AudioFile(self)
         self._rating = ""
-        self._usage = UsageStats(datetime.now())
+        self._play_count = 0
+        self._last_played = None
 
     @abstractmethod
     def get_description(self) -> str:
@@ -60,15 +76,20 @@ class AudioFile:
 
     def get_play_count(self) -> int:
         """Gets the amount of times the song is played and returns the amount"""
-        return self._usage.play_count
+        return self._play_count
 
-    def update_usage_stats(self):
-        """Play count is incremented by 1"""
-        self._usage.increment_usage_stats()
+    def update_play_count(self):
+        """ update the play count and last played time when a song is played """
+        self._play_count += 1
+        self._last_played = datetime.now()
 
-    def get_usage_stats(self) -> UsageStats:
-        """Returns the UsageStats class"""
-        return self._usage
+    @property
+    def last_played(self):
+        """ return the date the song or playlist was last played """
+        if self._last_played is None:
+            return None
+        else:
+            return self._last_played.strftime(AudioFile._DATE_FORMAT)
 
     @abstractmethod
     def meta_data(self) -> dict:
@@ -105,6 +126,15 @@ class AudioFile:
     def __validate_AudioFile(self):
         if type(self) == AudioFile:
             raise TypeError("Error: Cannot create super class objects.")
+
+    @classmethod
+    def __valid_datetime(cls, date):
+        """ private method to validate the date is datetime object """
+        if type(date) is not datetime:
+            return False
+        else:
+            return True
+
 
 
 
