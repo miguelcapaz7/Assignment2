@@ -12,7 +12,11 @@ c.execute('''
            pathname TEXT NOT NULL,
            filename TEXT NOT NULL,
            album TEXT NULL,
-           genre TEXT NULL)
+           genre TEXT NULL,
+           date_added TEXT NOT NULL,
+           last_played TEXT NULL,
+           play_count INTEGER NOT NULL,
+           rating INTEGER NULL)
           ''')
 
 conn.commit()

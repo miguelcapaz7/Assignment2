@@ -1,7 +1,7 @@
 import os
 from abc import abstractmethod
 from base import Base
-from sqlalchemy import Column, Text
+from sqlalchemy import Column, Text, Integer
 from datetime import datetime
 
 
@@ -15,9 +15,13 @@ class AudioFile(Base):
     id = Column(Text, primary_key=True)
     title = Column(Text, nullable=False)
     artist = Column(Text, nullable=False)
-    runtime = Column(Text, nullable=False)
+    runtime = Column(Text)
     pathname = Column(Text, nullable=False)
     filename = Column(Text, nullable=False)
+    date_added = Column(Text, nullable=False)
+    last_played = Column(Text)
+    play_count = Column(Integer, nullable=False)
+    rating = Column(Integer)
 
     _DATE_FORMAT = "%Y-%m-%d"
 

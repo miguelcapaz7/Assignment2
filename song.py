@@ -10,8 +10,8 @@ class Song(AudioFile):
 
     """ ORM: map db columns to instance variables in this class """
 
-    album = Column(Text, nullable=True)
-    genre = Column(Text, nullable=True)
+    album = Column(Text)
+    genre = Column(Text)
 
     def __init__(self, title: str, artist: str, runtime: str, pathname: str, filename: str,
                  album: str, genre: str = None):
