@@ -41,6 +41,12 @@ class Song(AudioFile):
             song_details += f" Genres of Song: {', '.join(self.genre)}"
         return song_details
 
+    def update(self, song):
+        """Sets the updated values of the song"""
+        self.user_rating = song.rating
+        if self.user_rating == ValueError:
+            raise ValueError("Error rating the song. Must be a number between 0 and 5.")
+
     def meta_data(self) -> dict:
         """Returns a dictionary of the song details"""
         song_dict = {

@@ -75,7 +75,7 @@ class AudioFile(Base):
         if type(rating) is int and 0 <= rating <= 5:
             self.rating = rating
         else:
-            print("Error rating the song. Must be a number between 0 and 5.")
+            raise ValueError("Error rating the song. Must be a number between 0 and 5.")
 
     def get_play_count(self) -> int:
         """Gets the amount of times the song is played and returns the amount"""
