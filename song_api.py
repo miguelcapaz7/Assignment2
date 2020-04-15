@@ -1,25 +1,26 @@
 from flask import Flask, request
 from song import Song
+from song_manager import SongManager
 import json
 
 app = Flask(__name__)
 
 SONGS_DB = 'songs.sqlite'
 
-point_mgr = PointManager(POINTS_DB)
+song_mgr = SongManager(SONGS_DB)
 
 
-@app.route('/points', methods=['POST'])
-def add_point():
+@app.route('/songs', methods=['POST'])
+def add_song():
     """ Adds a point to the Grid """
     content = request.json
 
     try:
-        point = Point(content['x'], content['y'])
-        point_id = point_mgr.add_point(point)
+        song = Song(content['x'], content['y'])
+        song_id = song_mgr.add_song(song)
 
         response = app.response_class(
-            response=str(point_id),
+            response=str(song_id),
             status=200
         )
     except ValueError as e:
@@ -31,21 +32,21 @@ def add_point():
     return response
 
 
-@app.route('/points/<int:point_id>', methods=['PUT'])
-def update_point(point_id):
+@app.route('/songs/<int:song_id>', methods=['PUT'])
+def update_song(song_id):
     """ Updates an existing point in the Point Manager """
     content = request.json
 
-    if point_id <= 0:
+    if song_id <= 0:
         response = app.response_class(
             status=400
         )
         return response
 
     try:
-        point = Point(content['x'], content['y'])
-        point.id = point_id
-        point_mgr.update_point(point)
+        song = Song(content['x'], content['y'])
+        song.id = song_id
+        song_mgr.update_song(song)
 
         response = app.response_class(
             status=200
@@ -64,21 +65,21 @@ def update_point(point_id):
 
 
 @app.route('/points/<int:point_id>', methods=['GET'])
-def get_point(point_id):
+def get_song(song_id):
     """ Gets an existing point from the Point Manager """
 
-    if point_id <= 0:
+    if song_id <= 0:
         response = app.response_class(
             status=400
         )
         return response
 
     try:
-        point = point_mgr.get_point(point_id)
+        song = song_mgr.get_song(song_id)
 
         response = app.response_class(
             status=200,
-            response=json.dumps(point.to_dict()),
+            response=json.dumps(song.to_dict()),
             mimetype='application/json'
         )
 
@@ -93,17 +94,17 @@ def get_point(point_id):
 
 
 @app.route('/points/<int:point_id>', methods=['DELETE'])
-def delete_point(point_id):
+def delete_song(song_id):
     """ Delete an existing point from the Point Manager """
 
-    if point_id <= 0:
+    if song_id <= 0:
         response = app.response_class(
             status=400
         )
         return response
 
     try:
-        point_mgr.delete_point(point_id)
+        song_mgr.delete_song(song_id)
 
         response = app.response_class(
             status=200
@@ -122,18 +123,18 @@ def delete_point(point_id):
 
 
 @app.route('/points/all', methods=['GET'])
-def get_all_points():
+def get_all_songs():
     """ Gets all points in the Point Manager """
-    points = point_mgr.get_all_points()
+    songs = song_mgr.get_all_songs()
 
-    point_list = []
+    song_list = []
 
-    for point in points:
-        point_list.append(point.to_dict())
+    for song in songs:
+        song_list.append(song.to_dict())
 
     response = app.response_class(
         status=200,
-        response=json.dumps(point_list),
+        response=json.dumps(song_list),
         mimetype='application/json'
     )
 
