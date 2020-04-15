@@ -50,7 +50,7 @@ class AudioFile(Base):
             raise ValueError("date_added must be a datetime object")
 
         self.__validate_AudioFile(self)
-        self.rating = ""
+        self.rating = None
         self.play_count = 0
         self.last_played = None
 

@@ -31,10 +31,10 @@ class Song(AudioFile):
         """Returns the description of the song as a string. """
         song_details = "{} by {} from the album {} added on {}. Runtime is {}." \
             .format(self.title, self.artist, self.album, self.date_added, self.runtime)
-        if self.last_played is not None and self.rating != "":
+        if self.last_played is not None and self.rating is not None:
             song_details += " Last played on {}. User rating is {}/5." \
                 .format(self.last_played, self.rating)
-        if self.last_played is not None and self.rating == "":
+        if self.last_played is not None and self.rating is None:
             song_details += " Last played on {}." \
                 .format(self.last_played)
         if len(self.genre) > 0:
