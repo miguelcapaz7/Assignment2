@@ -12,7 +12,7 @@ song_mgr = SongManager(SONGS_DB)
 
 @app.route('/songs', methods=['POST'])
 def add_song():
-    """ Adds a point to the Grid """
+    """ Adds a song to the db """
     content = request.json
 
     try:
@@ -34,96 +34,97 @@ def add_song():
     return response
 
 
-# @app.route('/songs/<int:song_id>', methods=['PUT'])
-# def update_song(song_id):
-#     """ Updates an existing point in the Point Manager """
-#     content = request.json
-#
-#     if song_id <= 0:
-#         response = app.response_class(
-#             status=400
-#         )
-#         return response
-#
-#     try:
-#         song = Song(content['x'], content['y'])
-#         song.id = song_id
-#         song_mgr.update_song(song)
-#
-#         response = app.response_class(
-#             status=200
-#         )
-#     except ValueError as e:
-#         status_code = 400
-#         if str(e) == "Point does not exist":
-#             status_code = 404
-#
-#         response = app.response_class(
-#             response=str(e),
-#             status=status_code
-#         )
-#
-#     return response
-#
-#
-# @app.route('/points/<int:point_id>', methods=['GET'])
-# def get_song(song_id):
-#     """ Gets an existing point from the Point Manager """
-#
-#     if song_id <= 0:
-#         response = app.response_class(
-#             status=400
-#         )
-#         return response
-#
-#     try:
-#         song = song_mgr.get_song(song_id)
-#
-#         response = app.response_class(
-#             status=200,
-#             response=json.dumps(song.to_dict()),
-#             mimetype='application/json'
-#         )
-#
-#         return response
-#     except ValueError as e:
-#         response = app.response_class(
-#             response=str(e),
-#             status=400
-#         )
-#
-#         return response
-#
-#
-# @app.route('/points/<int:point_id>', methods=['DELETE'])
-# def delete_song(song_id):
-#     """ Delete an existing point from the Point Manager """
-#
-#     if song_id <= 0:
-#         response = app.response_class(
-#             status=400
-#         )
-#         return response
-#
-#     try:
-#         song_mgr.delete_song(song_id)
-#
-#         response = app.response_class(
-#             status=200
-#         )
-#     except ValueError as e:
-#         status_code = 400
-#         if str(e) == "Point does not exist":
-#             status_code = 404
-#
-#         response = app.response_class(
-#             response=str(e),
-#             status=status_code
-#         )
-#
-#     return response
-#
-#
+@app.route('/songs/<int:song_id>', methods=['PUT'])
+def update_song(song_id):
+    """ Updates an the rating of a song in Song Manager """
+    content = request.json
+
+    if song_id <= 0:
+        response = app.response_class(
+            status=400
+        )
+        return response
+
+    try:
+        song = song_mgr.get_song(song_id)
+        if 'rating' in content.keys():
+            song.rating = content['rating']
+        song_mgr.update_song(song)
+
+        response = app.response_class(
+            status=200
+        )
+    except ValueError as e:
+        status_code = 400
+        if str(e) == "Song does not exist":
+            status_code = 404
+
+        response = app.response_class(
+            response=str(e),
+            status=status_code
+        )
+
+    return response
+
+
+@app.route('/songs/<int:song_id>', methods=['GET'])
+def get_song(song_id):
+    """ Gets an existing point from the Point Manager """
+
+    if song_id <= 0:
+        response = app.response_class(
+            status=400
+        )
+        return response
+
+    try:
+        song = song_mgr.get_song(song_id)
+
+        response = app.response_class(
+            status=200,
+            response=json.dumps(song.meta_data()),
+            mimetype='application/json'
+        )
+
+        return response
+    except ValueError as e:
+        response = app.response_class(
+            response=str(e),
+            status=400
+        )
+
+        return response
+
+
+@app.route('/songs/<int:song_id>', methods=['DELETE'])
+def delete_song(song_id):
+    """ Delete an existing song from the Song Manager """
+
+    if song_id <= 0:
+        response = app.response_class(
+            status=400
+        )
+        return response
+
+    try:
+        song_mgr.delete_song(song_id)
+
+        response = app.response_class(
+            status=200
+        )
+    except ValueError as e:
+        status_code = 400
+        if str(e) == "Song does not exist":
+            status_code = 404
+
+        response = app.response_class(
+            response=str(e),
+            status=status_code
+        )
+
+    return response
+
+
 @app.route('/songs/all', methods=['GET'])
 def get_all_songs():
     """ Gets all points in the Point Manager """
