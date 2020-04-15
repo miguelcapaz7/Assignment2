@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from song import Song
-from sqlalchemy.ext.declarative import declarative_base
+from base import Base
 
 
 class SongManager:
@@ -14,7 +14,6 @@ class SongManager:
             raise ValueError(f"Song database [{song_db}] not found")
 
         engine = create_engine('sqlite:///' + song_db)
-        Base = declarative_base()
         Base.metadata.bind = engine
         self._db_session = sessionmaker(bind=engine)
 
@@ -22,17 +21,17 @@ class SongManager:
         """ Adds a new song to the song database """
 
         if new_song is None or not isinstance(new_song, Song):
-            raise ValueError("Invalid Student Object")
+            raise ValueError("Invalid Song Object")
 
         session = self._db_session()
         session.add(new_song)
 
         session.commit()
 
-        song_id = new_song.song_id
+        # song_id = new_song.song_id
         session.close()
 
-        return song_id
+        # return song_id
 
     def delete_song(self, song_id):
         """ Delete a song from the database """

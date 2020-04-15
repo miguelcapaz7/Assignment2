@@ -60,9 +60,8 @@ class AudioFile(Base):
 
     def get_location(self) -> str:
         """Returns the path of the song and the name of the audio file"""
-        file_details = "File Path of Song: {} \nFile Name of Song: {}" \
-            .format(self._pathname, self._filename)
-        return file_details
+        file_path = "{}{}".format(self._pathname, self._filename)
+        return file_path
 
     @property
     def user_rating(self) -> str:
