@@ -9,9 +9,10 @@ c.execute('''
            title TEXT NOT NULL,
            artist TEXT NOT NULL,
            runtime TEXT NOT NULL,
+           pathname TEXT NOT NULL,
+           filename TEXT NOT NULL,
            album TEXT NULL,
-           genre TEXT NULL,
-            file_location TEXT NOT NULL)
+           genre TEXT NULL)
           ''')
 
 conn.commit()
