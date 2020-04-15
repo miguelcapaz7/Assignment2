@@ -28,10 +28,10 @@ class SongManager:
 
         session.commit()
 
-        # song_id = new_song.song_id
+        song_id = new_song.title
         session.close()
 
-        # return song_id
+        return song_id
 
     def delete_song(self, song_id):
         """ Delete a song from the database """

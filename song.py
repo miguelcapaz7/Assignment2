@@ -20,41 +20,41 @@ class Song(AudioFile):
         if not isinstance(album, str):
             raise ValueError("Album must be entered as a string.")
         else:
-            self._album = album
+            self.album = album
         if genre is not None:
             if not isinstance(genre, str):
                 raise ValueError("Genre must be entered as a string.")
 
-        self._genre = genre
+        self.genre = genre
 
     def get_description(self) -> str:
         """Returns the description of the song as a string. """
         song_details = "{} by {} from the album {} added on {}. Runtime is {}." \
-            .format(self._title, self._artist, self._album, self._date_added, self._runtime)
-        if self._last_played is not None and self._rating != "":
+            .format(self.title, self.artist, self.album, self.date_added, self.runtime)
+        if self.last_played is not None and self.rating != "":
             song_details += " Last played on {}. User rating is {}/5." \
-                .format(self._last_played, self._rating)
-        if self._last_played is not None and self._rating == "":
+                .format(self.last_played, self.rating)
+        if self.last_played is not None and self.rating == "":
             song_details += " Last played on {}." \
-                .format(self._last_played)
-        if len(self._genre) > 0:
-            song_details += f" Genres of Song: {', '.join(self._genre)}"
+                .format(self.last_played)
+        if len(self.genre) > 0:
+            song_details += f" Genres of Song: {', '.join(self.genre)}"
         return song_details
 
     def meta_data(self) -> dict:
         """Returns a dictionary of the song details"""
         song_dict = {
-            "title": self._title,
-            "artist": self._artist,
-            "album": self._album,
-            "date_added": self._date_added,
-            "runtime": self._runtime,
-            "pathname": self._pathname,
-            "filename": self._filename,
-            "play_count": self._play_count,
-            "last_played": self._last_played,
-            "rating": self._rating,
-            "genre": self._genre
+            "title": self.title,
+            "artist": self.artist,
+            "album": self.album,
+            "date_added": self.date_added,
+            "runtime": self.runtime,
+            "pathname": self.pathname,
+            "filename": self.filename,
+            "play_count": self.play_count,
+            "last_played": self.last_played,
+            "rating": self.rating,
+            "genre": self.genre
         }
         return song_dict
 

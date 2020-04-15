@@ -124,23 +124,23 @@ def add_song():
 #     return response
 #
 #
-# @app.route('/points/all', methods=['GET'])
-# def get_all_songs():
-#     """ Gets all points in the Point Manager """
-#     songs = song_mgr.get_all_songs()
-#
-#     song_list = []
-#
-#     for song in songs:
-#         song_list.append(song.to_dict())
-#
-#     response = app.response_class(
-#         status=200,
-#         response=json.dumps(song_list),
-#         mimetype='application/json'
-#     )
-#
-#     return response
+@app.route('/songs/all', methods=['GET'])
+def get_all_songs():
+    """ Gets all points in the Point Manager """
+    songs = song_mgr.get_all_songs()
+
+    song_list = []
+
+    for song in songs:
+        song_list.append(song.meta_data())
+
+    response = app.response_class(
+        status=200,
+        response=json.dumps(song_list),
+        mimetype='application/json'
+    )
+
+    return response
 
 
 if __name__ == "__main__":

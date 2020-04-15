@@ -12,7 +12,7 @@ class AudioFile(Base):
     ID: A01167207"""
 
     __tablename__ = "Song"
-    id = Column(Text, primary_key=True)
+    id = Column(Integer, primary_key=True)
     title = Column(Text, nullable=False)
     artist = Column(Text, nullable=False)
     runtime = Column(Text)
@@ -30,29 +30,29 @@ class AudioFile(Base):
         if not isinstance(title, str):
             raise ValueError("Title must be entered as a string.")
         else:
-            self._title = title
+            self.title = title
         if not isinstance(artist, str):
             raise ValueError("Artist must be entered as a string.")
         else:
-            self._artist = artist
+            self.artist = artist
         if not AudioFile.__validate_runtime(runtime):
             raise TypeError("Runtime must be formatted as 'MM:SS'")
         else:
-            self._runtime = runtime
+            self.runtime = runtime
         if not AudioFile.__validate_filepath(pathname, filename):
             raise FileNotFoundError("Pathname not found.")
         else:
-            self._pathname = pathname
-            self._filename = filename
+            self.pathname = pathname
+            self.filename = filename
         if AudioFile.__valid_datetime(datetime.now()):
-            self._date_added = datetime.now().strftime(AudioFile._DATE_FORMAT)
+            self.date_added = datetime.now().strftime(AudioFile._DATE_FORMAT)
         else:
             raise ValueError("date_added must be a datetime object")
 
         self.__validate_AudioFile(self)
-        self._rating = ""
-        self._play_count = 0
-        self._last_played = None
+        self.rating = ""
+        self.play_count = 0
+        self.last_played = None
 
     @abstractmethod
     def get_description(self) -> str:
@@ -60,39 +60,39 @@ class AudioFile(Base):
 
     def get_location(self) -> str:
         """Returns the path of the song and the name of the audio file"""
-        file_path = "{}{}".format(self._pathname, self._filename)
+        file_path = "{}{}".format(self.pathname, self.filename)
         return file_path
 
     @property
     def user_rating(self) -> str:
         """Gets and returns the rating of the song"""
-        return self._rating
+        return self.rating
 
     @user_rating.setter
     def user_rating(self, rating: int) -> None:
         """Checks if the rating is a number between 0 and 5 and returns it if true.
         Otherwise, an error message is printed"""
         if type(rating) is int and 0 <= rating <= 5:
-            self._rating = rating
+            self.rating = rating
         else:
             print("Error rating the song. Must be a number between 0 and 5.")
 
     def get_play_count(self) -> int:
         """Gets the amount of times the song is played and returns the amount"""
-        return self._play_count
+        return self.play_count
 
     def update_play_count(self):
         """ update the play count and last played time when a song is played """
-        self._play_count += 1
-        self._last_played = datetime.now()
+        self.play_count += 1
+        self.last_played = datetime.now()
 
     @property
-    def last_played(self):
+    def get_last_played(self):
         """ return the date the song or playlist was last played """
-        if self._last_played is None:
+        if self.last_played is None:
             return None
         else:
-            return self._last_played.strftime(AudioFile._DATE_FORMAT)
+            return self.last_played.strftime(AudioFile._DATE_FORMAT)
 
     @abstractmethod
     def meta_data(self) -> dict:
@@ -101,12 +101,12 @@ class AudioFile(Base):
     @property
     def get_title(self) -> str:
         """Returns title of audio file"""
-        return self._title
+        return self.title
 
     @property
     def get_artist(self) -> str:
         """Returns artist of audio file"""
-        return self._artist
+        return self.artist
 
     @classmethod
     def __validate_runtime(cls, runtime):

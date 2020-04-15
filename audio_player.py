@@ -127,7 +127,7 @@ class AudioPlayer:
         if self._current_title is None:
             return f"No song playing."
         song = self._library.get_song(self._current_title)
-        runtime = song._runtime
+        runtime = song.runtime
         remaining_secs = int(round(self._player.get_time() / 1000, 0))
         mins = int(remaining_secs // 60)
         secs = int(remaining_secs % 60)

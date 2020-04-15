@@ -18,7 +18,7 @@ class AudioLibrary:
         """Adds a song to the list of songs in the library."""
         if song not in self._songs:
             self._songs.append(song)
-            self.titles.append(song._title)
+            self.titles.append(song.title)
         else:
             raise ValueError("Error: The song already exists in the library. Failed to"
                              " add song.")
@@ -27,7 +27,7 @@ class AudioLibrary:
         """Removes a song from the list of songs in the library"""
         if song in self._songs:
             self._songs.remove(song)
-            self.titles.remove(song._title)
+            self.titles.remove(song.title)
         else:
             raise ValueError("Error: The song does not exist in the library. Failed to"
                              " remove song.")
@@ -35,7 +35,7 @@ class AudioLibrary:
     def get_song(self, title) -> Song:
         """Gets a single song object from the title"""
         for song in self._songs:
-            if title == song._title:
+            if title == song.title:
                 return song
 
     def get_songs(self) -> list:
