@@ -37,8 +37,8 @@ class Song(AudioFile):
         if self.last_played is not None and self.rating is None:
             song_details += " Last played on {}." \
                 .format(self.last_played)
-        if len(self.genre) > 0:
-            song_details += f" Genres of Song: {', '.join(self.genre)}"
+        if self.genre is not None:
+            song_details += f" Genre of Song: {self.genre}"
         return song_details
 
     def update(self, song):
