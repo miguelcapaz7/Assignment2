@@ -50,7 +50,7 @@ class MainController(tk.Frame):
         self._main_window.album_name['text'] = song['album']
         self._main_window.genre_name['text'] = song['genre']
         self._main_window.state_value['text'] = "Playing"
-        # self.update_play_stats(song['filename'])
+        self.update_play_stats(song['filename'])
 
     def pause_callback(self):
         """ Pause the player """
@@ -90,10 +90,10 @@ class MainController(tk.Frame):
             message = "Rating must be a number"
             messagebox.showinfo(title="Error", message=message)
 
-    # def update_play_stats(self, filename):
-    #     response = requests.get("http://localhost:5000/songs/" + filename)
-    #     song_data = response.json()
-    #     requests.put("http://localhost:5000/songs/play_count/" + filename, json=song_data)
+    def update_play_stats(self, filename):
+        response = requests.get("http://localhost:5000/songs/" + filename)
+        song_data = response.json()
+        requests.put("http://localhost:5000/songs/play_count/" + filename, json=song_data)
 
     def quit_callback(self):
         """ Exit the application. """

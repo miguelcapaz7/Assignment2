@@ -1,6 +1,7 @@
 from flask import Flask, request
 from song import Song
 from song_manager import SongManager
+from datetime import datetime
 import json
 
 app = Flask(__name__)
@@ -65,9 +66,13 @@ def update_rating(filename):
 def update_play_count(filename):
     """ Updates an the rating of a song in Song Manager """
 
+    content = request.json
     try:
         song = song_mgr.get_song(filename)
-        song.update_play_count()
+        if 'play_count' in content.keys():
+            song.play_count += 1
+        if 'last_played' in content.keys():
+            song.last_played = datetime.now()
         song_mgr.update_song(song)
 
         response = app.response_class(
