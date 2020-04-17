@@ -3,16 +3,19 @@ from tkinter import *
 
 class RatingWindow(Frame):
 
-    def __init__(self, parent, controller):
-        """ Initialize the addstudent window """
+    def __init__(self, parent, controller, title):
+        """ Initialize the Rate Song window """
         Frame.__init__(self, parent)
         parent.title('Rate Song')
 
         self.top_frame = Frame(self.master)
+        self.mid_frame = Frame(self.master)
         self.bot_frame = Frame(self.master)
         self.top_frame.grid(row=0, padx=30, pady=10)
-        self.bot_frame.grid(row=1, padx=30, pady=10)
+        self.mid_frame.grid(row=1, padx=30, pady=10)
+        self.bot_frame.grid(row=2, padx=30, pady=10)
 
+        Label(self.mid_frame, text=title).grid(row=0, column=0, sticky=E, padx=5, pady=5)
         Label(self.bot_frame, text='Rating:').grid(row=0, column=0, sticky=E, padx=5, pady=5)
 
         self._entry1 = Entry(self.bot_frame, width=20)
