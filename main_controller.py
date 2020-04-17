@@ -5,7 +5,9 @@ import eyed3
 import requests
 from tkinter import *
 from tkinter import filedialog
+from tkinter import messagebox
 from main_window import MainWindow
+from rating_window import RatingWindow
 
 
 class MainController(Frame):
@@ -42,20 +44,40 @@ class MainController(Frame):
         media = self._vlc_instance.media_new_path(media_file)
         self._player.set_media(media)
         self._player.play()
+        self._main_window.song_playing['text'] = song['title']
+        self._main_window.state_value['text'] = "Playing"
+        # self.update_play_stats(song['filename'])
 
     def pause_callback(self):
         """ Pause the player """
         if self._player.get_state() == vlc.State.Playing:
             self._player.pause()
+            self._main_window.state_value['text'] = "Paused"
 
     def resume_callback(self):
         """ Resume playing """
         if self._player.get_state() == vlc.State.Paused:
             self._player.pause()
+            self._main_window.state_value['text'] = "Playing"
 
     def stop_callback(self):
         """ Stop the player """
         self._player.stop()
+        self._main_window.state_value['text'] = "Stopped"
+
+    def update_rating(self, event):
+        index = self._main_window.get_index()
+        form_data = self._rate_song.get_form_data()
+        get_response = requests.get("http://localhost:5000/songs/all")
+        song_list = get_response.json()
+        song = song_list[index]
+        response = requests.put("http://localhost:5000/songs/rating/" + song['filename'], json=form_data)
+
+
+    # def update_play_stats(self, filename):
+    #     response = requests.get("http://localhost:5000/songs/" + filename)
+    #     song_data = response.json()
+    #     requests.put("http://localhost:5000/songs/play_count/" + filename, json=song_data)
 
     def quit_callback(self):
         """ Exit the application. """
@@ -104,9 +126,16 @@ class MainController(Frame):
         del_response = requests.delete("http://localhost:5000/songs/" + str(filename))
 
         if del_response.status_code == 200:
-            # msg_str = f'{selected_title} has been deleted'
-            # messagebox.showinfo(title='Delete Song', message=msg_str)
             self.list_songs_callback()
+
+    def rate_song_popup(self):
+        """ Show Add Student Popup Window """
+        self._rate_win = Toplevel()
+        self._rate_song = RatingWindow(self._rate_win, self)
+
+    def _close_rate_song_popup(self):
+        """ Close Add Student Popup """
+        self._rate_win.destroy()
 
 
 if __name__ == "__main__":

@@ -34,8 +34,8 @@ def add_song():
     return response
 
 
-@app.route('/songs/<string:filename>', methods=['PUT'])
-def update_song(filename):
+@app.route('/songs/rating/<string:filename>', methods=['PUT'])
+def update_rating(filename):
     """ Updates an the rating of a song in Song Manager """
     content = request.json
 
@@ -43,6 +43,31 @@ def update_song(filename):
         song = song_mgr.get_song(filename)
         if 'rating' in content.keys():
             song.rating = content['rating']
+        song_mgr.update_song(song)
+
+        response = app.response_class(
+            status=200
+        )
+    except ValueError as e:
+        status_code = 400
+        if str(e) == "Song does not exist":
+            status_code = 404
+
+        response = app.response_class(
+            response=str(e),
+            status=status_code
+        )
+
+    return response
+
+
+@app.route('/songs/play_count/<string:filename>', methods=['PUT'])
+def update_play_count(filename):
+    """ Updates an the rating of a song in Song Manager """
+
+    try:
+        song = song_mgr.get_song(filename)
+        song.update_play_count()
         song_mgr.update_song(song)
 
         response = app.response_class(

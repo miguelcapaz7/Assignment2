@@ -34,13 +34,13 @@ class MainWindow(Frame):
         bot_right_frame.grid(row=2, column=1, padx=10, pady=10)
 
         # Labels
-        Label(top_frame, text='File:').grid(row=0, column=0, sticky=E, padx=5, pady=5)
-        self._file_value = Label(top_frame, text='Test')
-        self._file_value.grid(row=0, column=1, sticky=W, padx=5, pady=5)
+        Label(mid_frame, text='Song:').grid(row=0, column=0, sticky=E, padx=5, pady=5)
+        self.song_playing = Label(mid_frame, text='')
+        self.song_playing.grid(row=0, column=1, sticky=W, padx=5, pady=5)
 
-        Label(mid_frame, text='State:').grid(row=0, column=0, sticky=E, padx=5, pady=5)
+        Label(mid_frame, text='State:').grid(row=1, column=0, sticky=E, padx=5, pady=5)
         self.state_value = Label(mid_frame, text='Not Playing')
-        self.state_value.grid(row=0, column=1, sticky=W, padx=5, pady=5)
+        self.state_value.grid(row=1, column=1, sticky=W, padx=5, pady=5)
 
         # Listbox
         self.list_box = Listbox(right_frame, width=30, height=10)
@@ -55,6 +55,10 @@ class MainWindow(Frame):
         self.list_box.config(yscrollcommand=scrollbar.set)
 
         # Main buttons
+
+        Button(top_frame, text='Add a Song', width=10, command=controller.open_mp3_file) \
+            .grid(row=2, column=1, sticky=E, padx=20, pady=5)
+
         Button(bot_frame, text='Play', width=10, command=controller.play_callback) \
             .grid(row=0, column=0, sticky=E, padx=10, pady=5)
         #
@@ -68,11 +72,11 @@ class MainWindow(Frame):
             .grid(row=0, column=3, sticky=E, padx=10, pady=5)
 
         # Buttons under listbox
-        Button(bot_right_frame, text='Add', width=10, command=controller.open_mp3_file) \
-            .grid(row=2, column=1, sticky=E, padx=20, pady=5)
-        #
-        Button(bot_right_frame, text='Delete', width=10, command=controller.delete_callback) \
+        Button(bot_right_frame, text='Rate Song', width=10, command=controller.rate_song_popup) \
             .grid(row=3, column=1, sticky=E, padx=20, pady=5)
+
+        Button(bot_right_frame, text='Delete', width=10, command=controller.delete_callback) \
+            .grid(row=4, column=1, sticky=E, padx=20, pady=5)
 
     def add_titles_to_listbox(self, titles):
         """ Update the listbox to display all titles """
