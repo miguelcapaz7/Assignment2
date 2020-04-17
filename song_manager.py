@@ -36,10 +36,10 @@ class SongManager:
 
         return song_id
 
-    def delete_song(self, song_id):
+    def delete_song(self, filename):
         """ Delete a song from the database """
-        if song_id is None or type(song_id) != int:
-            raise ValueError("Invalid Song ID")
+        if filename is None or type(filename) != str:
+            raise ValueError("Invalid Filename")
 
         session = self._db_session()
 
@@ -48,7 +48,7 @@ class SongManager:
                 session.close()
                 raise ValueError("Song does not exist")
 
-            if song_id == song.id:
+            if filename == song.filename:
                 session.delete(song)
                 session.commit()
 
@@ -70,15 +70,15 @@ class SongManager:
         session.commit()
         session.close()
 
-    def get_song(self, song_id):
+    def get_song(self, filename):
         """ Return song object matching ID"""
-        if song_id is None or type(song_id) != int:
-            raise ValueError("Invalid Song ID")
+        if filename is None or type(filename) != str:
+            raise ValueError("Invalid Filename")
 
         session = self._db_session()
 
         for song in self.get_all_songs():
-            if song_id == song.id:
+            if filename == song.filename:
                 session.close()
                 return song
 

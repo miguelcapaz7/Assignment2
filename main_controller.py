@@ -2,158 +2,115 @@ from song import Song
 import vlc
 import os
 import eyed3
+import requests
+from tkinter import *
+from tkinter import filedialog
+from main_window import MainWindow
 
 
-class MainController:
+class MainController(Frame):
     """
-    This is a better Audio Player (ie: better than the first simple player
-    we used. This class consists of a number of commands to instantiate and
-    control a vlc instance, as well as a command loop to accept and process
-    user commands via a command line interface (cli).
-
-    Once instantiated the player can be controlled by the following commands:
-    play list state time pause resume quit stop help
-    Each of these commands is implemented in a corresponding method that
-    is prefixed with do_, for example do_play, do_help, etc.
-
-    The player is very rudimentary and does not include provisions for
-    queueing songs to play, or for playing playlists or podcasts.
+    Controller for our views
     """
 
-    def __init__(self, media_path):
-        print("Starting the Audio Player ...")
+    def __init__(self, parent):
+        Frame.__init__(self, parent)
+        self._root_win = Toplevel()
+        self._main_window = MainWindow(self._root_win, self)
         self._vlc_instance = vlc.Instance()
         self._player = self._vlc_instance.media_player_new()
-        print("Initializing media library ...")
-        self.load(media_path)
-        self._current_title = None
-        print("\nWelcome to the Audio Player.\n")
+        self.list_songs_callback()
 
-    def do_list(self, args):
-        """ List all song titles with numbers for playback etc """
-        tags = []
-        for title in sorted(self._library.titles):
-            tags.append(self._library.get_song(title).meta_data())
-        col1_width = max([len(tag['title']) for tag in tags])
-        col2_width = max([len(tag['artist']) for tag in tags])
-        col3_width = max([len(tag['album']) for tag in tags])
+    def list_songs_callback(self):
+        """ Lists song titles in listbox. """
+        response = requests.get("http://localhost:5000/songs/all")
+        song_list = response.json()
+        song_title_list = []
+        for song in song_list:
+            song_title_list.append(song['title'])
+        self._main_window.add_titles_to_listbox(song_title_list)
 
-        print(f" Num  "
-              f"{'Title':{col1_width}}  "
-              f"{'Artist':{col2_width}}  "
-              f"{'Album':{col3_width}}  "
-              f"{'Duration':8}")
-        print(f"----  "
-              f"{'-' * col1_width:{col1_width}}  "
-              f"{'-' * col2_width:{col2_width}}  "
-              f"{'-' * col3_width:{col3_width}}  "
-              f"{'-' * 8:8}")
-        for i, tag in enumerate(tags):
-            print(f"{i + 1:3}.  "
-                  f"{tag['title']:{col1_width}}  "
-                  f"{tag['artist']:{col2_width}}  "
-                  f"{tag['album']:{col3_width}}  "
-                  f"{tag['runtime']:>6}")
-
-    def do_play(self, num):
+    def play_callback(self):
         """Play a song specified by number. """
-        title = self._get_title_from_num(num)
-        if title is None:
-            print(f"Invalid song num: {num}. Syntax is: play song_num. Use "
-                  f"list to get song_num's.")
-            return
-        song = self._library.get_song(title)
-
+        index = self._main_window.get_index()
+        response = requests.get("http://localhost:5000/songs/all")
+        song_list = response.json()
+        song = song_list[index]
+        media_file = song['pathname'] + song['filename']
         if self._player.get_state() == vlc.State.Playing:
             self._player.stop()
-        media_file = song.get_location()
         media = self._vlc_instance.media_new_path(media_file)
         self._player.set_media(media)
         self._player.play()
-        self._current_title = title
-        print(f"Playing {title} from file {media_file}")
 
-    def _get_title_from_num(self, num):
-        """ Find the title of a song, given its song number (as displayed
-            from list, and as entered by the user).
-        """
-        try:
-            song_num = int(num)
-            title = sorted(self._library.titles)[song_num - 1]
-        except (IndexError, ValueError, TypeError):
-            title = None
-        return title
-
-    def do_pause(self, args):
+    def pause_callback(self):
         """ Pause the player """
         if self._player.get_state() == vlc.State.Playing:
             self._player.pause()
-        print(f"Player paused during playback of {self._current_title}")
 
-    def do_resume(self, args):
+    def resume_callback(self):
         """ Resume playing """
         if self._player.get_state() == vlc.State.Paused:
             self._player.pause()
-        print(f"Playback of {self._current_title} resumed")
 
-    def do_stop(self, args):
+    def stop_callback(self):
         """ Stop the player """
         self._player.stop()
-        print(f"Player stopped")
 
-    def do_quit(self, args):
-        """ Terminate the program """
-        self._player.stop()
-        self._player.release()
-        print(f"Audio Player exiting.")
-        exit(0)
+    def quit_callback(self):
+        """ Exit the application. """
+        self.master.quit()
 
-    def do_state(self, args):
-        """ Display state of the player. """
-        state = str(self._player.get_state()).split('.')[1]
-        print(f'Current player state is {state}')
-        print(f'Current song: {self._current_title}')
-        print(f'Playback posn: {self._get_current_posn()}')
+    def open_mp3_file(self):
+        """ Load the file name selected"""
+        abs_path = filedialog.askopenfilename(initialdir='.\\Music\\')
+        path = os.getcwd() + "\\Music\\"
+        file = os.path.basename(abs_path)
+        if file.endswith('.mp3'):
+            mp3_file = eyed3.load(os.path.join(path, file))
+            runtime = mp3_file.info.time_secs
+            mins = int(runtime // 60)
+            secs = int(runtime % 60)
+            song = Song(str(getattr(mp3_file.tag, 'title')), str(getattr(mp3_file.tag, 'artist')),
+                        '{}:{}'.format(mins, secs), '{}'.format(path),
+                        '\\{}'.format(file), str(getattr(mp3_file.tag, 'album')),
+                        str(getattr(mp3_file.tag, 'genre')))
+            self.add_callback(song)
 
-    def do_time(self, args):
-        """ Display current play time of current song. """
-        if self._current_title is None:
-            print("No song playing.")
-        else:
-            print(f'{self._current_title} {self._get_current_posn()}')
+    def add_callback(self, song):
+        """ Add audio file. """
+        data = {'title': song.title,
+                'artist': song.artist,
+                'runtime': song.runtime,
+                'pathname': song.pathname,
+                'filename': song.filename,
+                'album': song.album,
+                'genre': song.genre
+                }
 
-    def _get_current_posn(self):
-        """ Return current play time (position in) current song. """
-        if self._current_title is None:
-            return f"No song playing."
-        song = self._library.get_song(self._current_title)
-        runtime = song.runtime
-        remaining_secs = int(round(self._player.get_time() / 1000, 0))
-        mins = int(remaining_secs // 60)
-        secs = int(remaining_secs % 60)
-        return f"at {mins}:{secs:02d} ... of {runtime}"
+        response = requests.post("http://localhost:5000/songs", json=data)
+        if response.status_code == 200:
+            # msg_str = f"{form_data.get('title')} added to the database"
+            # messagebox.showinfo(title='Add Song', message=msg_str)
+            self.list_songs_callback()
 
-    def do_help(self, args):
-        """ List names of all methods that can run as commands. """
-        methods = [m for m in dir(AudioPlayer) if 'do_' in m]
-        cmd_names = "  ".join(methods).replace('do_', '')
-        print(f"Commands: " + cmd_names)
+    def delete_callback(self):
+        """ Deletes selected song. """
+        index = self._main_window.get_index()
+        get_response = requests.get("http://localhost:5000/songs/all")
+        song_list = get_response.json()
+        song = song_list[index]
+        filename = song['filename']
+        del_response = requests.delete("http://localhost:5000/songs/" + str(filename))
 
-    # def load(self, path):
-    #     """Creates a song object for each mp3 in the directory. These objects
-    #     are appended to the songs list."""
-    #     if os.path.exists(path):
-    #         mp3_files = os.listdir(path)
-    #         for file in mp3_files:
-    #             if file.endswith('.mp3'):
-    #                 mp3_file = eyed3.load(os.path.join(path, file))
-    #                 runtime = mp3_file.info.time_secs
-    #                 mins = int(runtime // 60)
-    #                 secs = int(runtime % 60)
-    #                 song = Song(str(getattr(mp3_file.tag, 'title')), str(getattr(mp3_file.tag, 'artist')),
-    #                             '{}:{}'.format(mins, secs), '{}'.format(path),
-    #                             '\\{}'.format(file), str(getattr(mp3_file.tag, 'album')),
-    #                             str(getattr(mp3_file.tag, 'genre')))
-    #                 self.add_song(song)  # adds song to songs list
-    #     else:
-    #         raise FileNotFoundError("Path not found.")
+        if del_response.status_code == 200:
+            # msg_str = f'{selected_title} has been deleted'
+            # messagebox.showinfo(title='Delete Song', message=msg_str)
+            self.list_songs_callback()
+
+
+if __name__ == "__main__":
+    """ Create Tk window manager and a main window. Start the main loop """
+    root = Tk()
+    MainController(root).pack()
+    mainloop()

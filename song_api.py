@@ -34,19 +34,13 @@ def add_song():
     return response
 
 
-@app.route('/songs/<int:song_id>', methods=['PUT'])
-def update_song(song_id):
+@app.route('/songs/<string:filename>', methods=['PUT'])
+def update_song(filename):
     """ Updates an the rating of a song in Song Manager """
     content = request.json
 
-    if song_id <= 0:
-        response = app.response_class(
-            status=400
-        )
-        return response
-
     try:
-        song = song_mgr.get_song(song_id)
+        song = song_mgr.get_song(filename)
         if 'rating' in content.keys():
             song.rating = content['rating']
         song_mgr.update_song(song)
@@ -67,18 +61,12 @@ def update_song(song_id):
     return response
 
 
-@app.route('/songs/<int:song_id>', methods=['GET'])
-def get_song(song_id):
+@app.route('/songs/<string:filename>', methods=['GET'])
+def get_song(filename):
     """ Gets an existing point from the Point Manager """
 
-    if song_id <= 0:
-        response = app.response_class(
-            status=400
-        )
-        return response
-
     try:
-        song = song_mgr.get_song(song_id)
+        song = song_mgr.get_song(filename)
 
         response = app.response_class(
             status=200,
@@ -96,18 +84,12 @@ def get_song(song_id):
         return response
 
 
-@app.route('/songs/<int:song_id>', methods=['DELETE'])
-def delete_song(song_id):
+@app.route('/songs/<string:filename>', methods=['DELETE'])
+def delete_song(filename):
     """ Delete an existing song from the Song Manager """
 
-    if song_id <= 0:
-        response = app.response_class(
-            status=400
-        )
-        return response
-
     try:
-        song_mgr.delete_song(song_id)
+        song_mgr.delete_song(filename)
 
         response = app.response_class(
             status=200
