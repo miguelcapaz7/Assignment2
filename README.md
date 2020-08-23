@@ -14,9 +14,9 @@ The following song properties are stored in the database:
 - Play Count
 - Rating
 
-  This project was built in the Object-Oriented Programming course at BCIT.
+This project was built in the Object-Oriented Programming course at BCIT.
   
-  Technologies Used:
+Technologies Used:
 - Python
 - Flask API
 - SQLite
