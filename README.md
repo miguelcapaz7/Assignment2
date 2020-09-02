@@ -15,7 +15,7 @@ A desktop-based python MP3 player that allows users to open media files to the p
 - Play Count
 - Rating
   
-## Technologies Used:
+## Technologies Used
 - Python
 - Flask API
 - SQLite
@@ -38,7 +38,7 @@ pip install eyed3
 pip install python-vlc
 ```
 
-**Usage**
+## Usage
 
 To use the application, run both `song_api.py` and `main_controller.py`.
 
