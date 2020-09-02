@@ -3,7 +3,7 @@
 ## Description
 A desktop-based python MP3 player that allows users to open media files to the program and to be able to play, pause, resume, and delete the song. The GUI provides information about each song that is played from an SQLite database. In addition, users have the option to rate a song out of 5.
 
-## The following song properties are stored in the database: ##
+**The following song properties are stored in the database:**
 - Title
 - Artist
 - Runtime
@@ -27,18 +27,18 @@ A desktop-based python MP3 player that allows users to open media files to the p
 Prior to usage, you must install VLC Media Player.
 
 **Dependencies**
-Use pip install -r requirements.txt to install modules. 
+Use `pip install -r requirements.txt` to install modules. 
 
 Or to individually install, 
 
-pip install sqlalchemy
+`pip install sqlalchemy
 pip install flask
 pip install requests
 pip install eyed3
-pip install python-vlc
+pip install python-vlc`
 
 **Usage**
-To use the application, run both song_api.py and main_controller.py
+To use the application, run both `song_api.py` and `main_controller.py`.
 
 
 This project was built in the Object-Oriented Programming course at BCIT.
