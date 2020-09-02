@@ -27,15 +27,18 @@ A desktop-based python MP3 player that allows users to open media files to the p
 Prior to usage, you must install VLC Media Player.
 
 **Dependencies**
+
 Use `pip install -r requirements.txt` to install modules. 
 
 Or to individually install, 
 
-`pip install sqlalchemy
+```
+pip install sqlalchemy
 pip install flask
 pip install requests
 pip install eyed3
-pip install python-vlc`
+pip install python-vlc
+```
 
 **Usage**
 To use the application, run both `song_api.py` and `main_controller.py`.
