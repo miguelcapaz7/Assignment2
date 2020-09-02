@@ -39,7 +39,7 @@ pip install python-vlc
 ```
 
 **Usage**
-To use the application, run both `song_api.py` and `main_controller.py`.
 
+To use the application, run both `song_api.py` and `main_controller.py`.
 
 This project was built in the Object-Oriented Programming course at BCIT.
