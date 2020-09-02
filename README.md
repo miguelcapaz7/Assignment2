@@ -28,9 +28,7 @@ Prior to usage, you must install VLC Media Player.
 
 **Dependencies**
 
-Use `pip install -r requirements.txt` to install modules. 
-
-Or to individually install, 
+To install modules, use... 
 
 ```
 pip install sqlalchemy
